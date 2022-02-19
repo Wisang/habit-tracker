@@ -1,3 +1,5 @@
+import math
+
 import requests
 
 from datetime import datetime
@@ -21,13 +23,33 @@ graph_config = {
     "color": "ajisai",
 }
 
+
+
 today = datetime.now().strftime("%Y%m%d")
 
 print(today)
 
+
+RESCUE_TIME_KEY = "B63ekrFHgsgvdPxReuffJaQwu4TBD0KrS2UrVWsg"
+RESCUE_TIME_ENDPOINT = "https://www.rescuetime.com/anapi/daily_summary_feed"
+
+rescue_time_params = {
+    "key": RESCUE_TIME_KEY,
+}
+
+response = requests.get(url=RESCUE_TIME_ENDPOINT, params=rescue_time_params)
+data = response.json()[0]
+
+date = data["date"]
+date = date.replace("-", "")
+productive_hours = math.ceil(data["all_productive_hours"])
+
+print(f"{date}: {productive_hours}")
+
+
 post_pixel_config = {
-    "date": today,
-    "quantity": "3",
+    "date": date,
+    "quantity": f"{productive_hours}",
 }
 
 # update_pixel_config = {
